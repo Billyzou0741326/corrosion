@@ -190,6 +190,8 @@ function(_corrosion_determine_libs_new target_triple out_libs out_flags)
             set(libs_list "${stripped_lib_list}")
             # Special case `msvcrt` to link with the debug version in Debug mode.
             list(TRANSFORM libs_list REPLACE "^msvcrt$" "\$<\$<CONFIG:Debug>:msvcrtd>")
+            # Special case `msvcrt` to link with the debug version in Debug mode (e.g `/defaultlib:msvcrt`), see https://github.com/corrosion-rs/corrosion/discussions/536
+            list(TRANSFORM flag_list REPLACE "^/defaultlib:msvcrt$" "\$<\$<CONFIG:Debug>:/defaultlib:msvcrtd>")
         else()
             message(DEBUG "Determining required native libraries - failed: Regex match failure.")
             message(DEBUG "`native-static-libs` not found in: `${cargo_build_error_message}`")
